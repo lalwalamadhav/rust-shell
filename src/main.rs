@@ -5,8 +5,11 @@ use std::process::Command;
 
 fn main() {
     loop {
-        let prompt: &str = "\n|> ";
-        print!("{}",format!("{}",&prompt).blue());
+        let add = Command::new("pwd")
+            .output()
+	    .expect("Getting the path failed");
+        let prompt: &str = "|> ";
+        print!("\n{}",format!("{}{}",String::from_utf8(add.stdout).expect("invalid"),&prompt).blue());
 	io::stdout()
 	    .flush()
 	    .unwrap();
@@ -25,9 +28,11 @@ fn main() {
 	}
 	if command == String::from("exit") {
             break;
+	} else if command == String::from(""){
+	    continue;
 	} else if &command[..2] == String::from("cd") {
 	    if space.len() != 0 {
-                match env::set_current_dir(&command[(space[0] + 1)..]).is_ok() {
+                match env::set_current_dir(&command[(space[0] + 1)..].trim()).is_ok() {
                     true => continue,
 		    false => {
                         println!("Incorrect path!");
@@ -40,9 +45,11 @@ fn main() {
 	} else {
 	    for i in 0..space.len() {
                 if i != (space.len()-1) {
-                    args.push(&command[(space[i]+1)..space[i+1]]);
+		    if space[i+1] > (space[i] + 1) {
+                        args.push(&command[(space[i]+1)..space[i+1]].trim());
+		    }
 		}  else {
-                    args.push(&command[(space[i]+1)..]);
+                    args.push(&command[(space[i]+1)..].trim());
 		}
 	    }
 	    let new_com = if args.len() != 0 {
@@ -67,7 +74,6 @@ fn main() {
 		    continue;
 		},
 	    };
-
 	}
     }
 }
