@@ -34,6 +34,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "krish"
+version = "0.1.0"
+dependencies = [
+ "colored",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -44,13 +51,6 @@ name = "libc"
 version = "0.2.122"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec647867e2bf0772e28c8bcde4f0d19a9216916e890543b5a03ed8ef27b8f259"
-
-[[package]]
-name = "shell"
-version = "0.1.0"
-dependencies = [
- "colored",
-]
 
 [[package]]
 name = "winapi"

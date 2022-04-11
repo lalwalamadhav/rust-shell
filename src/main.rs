@@ -40,7 +40,7 @@ fn main() {
 		    },
 		};
 	    } else {
-	        assert!(env::set_current_dir("/home/madhav").is_ok());
+	        assert!(env::set_current_dir(env::var("HOME").expect("HOME environment variable not set!")).is_ok());
 	    }
 	} else {
 	    for i in 0..space.len() {
