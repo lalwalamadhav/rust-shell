@@ -30,6 +30,9 @@ fn main() {
             break;
 	} else if command == String::from(""){
 	    continue;
+	} else if command.len() == 1 {
+            println!("Command not found!");
+	    continue;
 	} else if &command[..2] == String::from("cd") {
 	    if space.len() != 0 {
                 match env::set_current_dir(&command[(space[0] + 1)..].trim()).is_ok() {
