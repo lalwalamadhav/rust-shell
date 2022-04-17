@@ -16,7 +16,7 @@ fn main() {
                 String::from_utf8(add.stdout).expect("invalid"),
                 &prompt
             )
-            .blue()
+            .red()
         );
         io::stdout().flush().unwrap();
         let mut command = String::new();
