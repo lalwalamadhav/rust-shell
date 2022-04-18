@@ -25,7 +25,7 @@ fn main() {
             .read_line(&mut command)
             .expect("Command input failed");
         let command = String::from(command.trim());
-	let (command,args) = process_command::comm(&command);
+        let (command, args) = process_command::comm(&command);
 
         if command == String::from("exit") {
             break;
@@ -50,7 +50,7 @@ fn main() {
                 .is_ok());
             } else {
                 println!("Expected only one argument, more than one given!");
-	    }
+            }
         } else {
             let mut a = match Command::new(&command).args(&args).spawn() {
                 Ok(k) => k,
