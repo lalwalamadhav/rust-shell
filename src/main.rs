@@ -9,7 +9,9 @@ fn main() {
             .output()
 	    .expect("Getting the path failed");
         let prompt: &str = "|> ";
-        print!("\n{}",format!("{}{}",String::from_utf8(add.stdout).expect("invalid"),&prompt).blue());
+        print!("\n{}",format!("{}{}",String::from_utf8(add.stdout)
+	     .expect("invalid"),&prompt)
+	     .red());
 	io::stdout()
 	    .flush()
 	    .unwrap();
@@ -26,7 +28,9 @@ fn main() {
                 space.push(k);
 	    }
 	}
-	if command == String::from("exit") {
+	if command_bytes.len() == 1 {
+            println!("Command not found!");
+	} else if command == String::from("exit") {
             break;
 	} else if command == String::from(""){
 	    continue;
@@ -55,17 +59,17 @@ fn main() {
 	    let new_com = if args.len() != 0 {
                 &command[..space[0]]
 	    } else {
-                &command[..]
+                &command
 	    };
-            let mut a = match Command::new(&new_com[..])
-		.args(&args)
-	        .spawn() {
+            let mut a = match Command::new(&new_com)
+	        .args(&args)
+                .spawn() {
                     Ok(k) => k,
-		    Err(_) => {
+    	            Err(_) => {
 		        println!("Command not found!");
-			continue;
+		        continue;
 		    },
-		};
+    	    };
 	    
             match a.wait().is_ok() {
                 true => continue,
@@ -73,7 +77,9 @@ fn main() {
                     println!("Command execution failed!");
 		    continue;
 		},
-	    };
-	}
+	     
+	
+	   };
+        }
     }
 }
