@@ -10,11 +10,12 @@ enum Input {
 impl Input {
     fn highlight(&self) {
         match self {
-            Input::ValidCommand(k) => format!(k).blue(),
-            Input::InvalidCommand(k) => format!(k).red(),
-	    Input::Arguments(k) => format!(k).cyan(),
-	    Input::Quotes(k) => format!(k).yellow(),
-        }
+            Input::ValidCommand(k) => print!(format!("{}", k).expect("Error Highlighting").blue()),
+            Input::InvalidCommand(k) => print!(format!("{}", k).expect("Error Highlighting").red()),
+            Input::Arguments(k) => print!(format!("{}", k).expect("Error Highlighting").cyan()),
+            Input::Quotes(k) => print!(format!("{}", k).expect("Error Highlighting").yellow()),
+        };
+        io::stdout().flush().unwrap();
     }
 }
 
@@ -24,21 +25,22 @@ pub fn highlighter(stdin: &String) {
     for line in stdin.lock().lines() {
         if line == "\n" {
             break;
-	} else {
-	    let (command, args) = process_command::com(&line);
+        } else {
+            let (command, args) = process_command::com(&line);
             if command_list.contains(&command) {
                 let input = Input::ValidCommand(&String::from(&command));
-	    } else {
+            } else {
                 let input = Input::ValidCommand(&String::from(&command));
-	    }
-	} for i in args.iter() {
+            }
+        }
+        for i in args.iter() {
             if &i[0].as_bytes() == b'"' {
                 arg.push(Input::Arguments(i));
-	    } else {
+            } else {
                 arg.push(Input::Quotes(i));
-	    }
-	}
-    } 
+            }
+        }
+    }
     input.highlight();
     for i in arg.iter() {
         i.highlight();
