@@ -1,19 +1,21 @@
 use colored::Colorize;
+use std::io;
+mod process_command
 
 enum Input {
-    ValidCommand(&String),
-    InvalidCommand(&String),
-    Arguments(&String),
-    Quotes(&String),
+    ValidCommand(str),
+    InvalidCommand(str),
+    Arguments(str),
+    Quotes(str),
 }
 
 impl Input {
     fn highlight(&self) {
         match self {
-            Input::ValidCommand(k) => print!(format!("{}", k).expect("Error Highlighting").blue()),
-            Input::InvalidCommand(k) => print!(format!("{}", k).expect("Error Highlighting").red()),
-            Input::Arguments(k) => print!(format!("{}", k).expect("Error Highlighting").cyan()),
-            Input::Quotes(k) => print!(format!("{}", k).expect("Error Highlighting").yellow()),
+            Input::ValidCommand(k) => print!("{}",format!("{}", k).expect("Error Highlighting").blue()),
+            Input::InvalidCommand(k) => print!("{}",format!("{}", k).expect("Error Highlighting").red()),
+            Input::Arguments(k) => print!("{}",format!("{}", k).expect("Error Highlighting").cyan()),
+            Input::Quotes(k) => print!("{}",format!("{}", k).expect("Error Highlighting").yellow()),
         };
         io::stdout().flush().unwrap();
     }
