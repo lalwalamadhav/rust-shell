@@ -14,7 +14,7 @@ impl Input {
         match self {
             Input::ValidCommand(k) => print!("{}",format!("{}", k).expect("Error Highlighting").blue()),
             Input::InvalidCommand(k) => print!("{}",format!("{}", k).expect("Error Highlighting").red()),
-            Input::Arguments(k) => print!("{}",format!("{}", k).expect("Error Highlighting").cyan()),
+            Input::Arguments(k) => print!(" {}",format!("{}", k).expect("Error Highlighting").cyan()),
             Input::Quotes(k) => print!("{}",format!("{}", k).expect("Error Highlighting").yellow()),
         };
         io::stdout().flush().unwrap();
