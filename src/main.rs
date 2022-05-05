@@ -1,85 +1,69 @@
-use std::env;
 use colored::Colorize;
-use std::io::{self,Write};
+use std::env;
+use std::io::{self, Write};
 use std::process::Command;
+mod process_command;
 
 fn main() {
     loop {
         let add = Command::new("pwd")
             .output()
-	    .expect("Getting the path failed");
+            .expect("Getting the path failed");
         let prompt: &str = "|> ";
-        print!("\n{}",format!("{}{}",String::from_utf8(add.stdout)
-	     .expect("invalid"),&prompt)
-	     .red());
-	io::stdout()
-	    .flush()
-	    .unwrap();
+        print!(
+            "\n{}",
+            format!(
+                "{}{}",
+                String::from_utf8(add.stdout).expect("invalid"),
+                &prompt
+            )
+            .red()
+        );
+        io::stdout().flush().unwrap();
         let mut command = String::new();
-	io::stdin()
-	    .read_line(&mut command)
-	    .expect("Command input failed");
-	let command = command.trim();
-	let mut space: Vec<usize> = vec![];
-	let mut args: Vec<&str> = vec![];
-        let command_bytes = command.as_bytes();
-	for (k, &i) in command_bytes.iter().enumerate() {
-            if i == b' '{
-                space.push(k);
-	    }
-	}
-	if command_bytes.len() == 1 {
-            println!("Command not found!");
-	} else if command == String::from("exit") {
+        io::stdin()
+            .read_line(&mut command)
+            .expect("Command input failed");
+        let command = String::from(command.trim());
+        let (command, args) = process_command::comm(&command);
+
+        if command == String::from("exit") {
             break;
-	} else if command == String::from(""){
-	    continue;
-	} else if &command[..2] == String::from("cd") {
-	    if space.len() != 0 {
-                match env::set_current_dir(&command[(space[0] + 1)..].trim()).is_ok() {
+        } else if command == String::from("") {
+            continue;
+        } else if command == String::from("cd") {
+            if args.len() == 1 {
+                match env::set_current_dir(&args[0]).is_ok() {
                     true => continue,
-		    false => {
+                    false => {
                         println!("Incorrect path!");
-			continue;
-		    },
-		};
-	    } else {
-	        assert!(env::set_current_dir("/home/madhav").is_ok());
-	    }
-	} else {
-	    for i in 0..space.len() {
-                if i != (space.len()-1) {
-		    if space[i+1] > (space[i] + 1) {
-                        args.push(&command[(space[i]+1)..space[i+1]].trim());
-		    }
-		}  else {
-                    args.push(&command[(space[i]+1)..].trim());
-		}
-	    }
-	    let new_com = if args.len() != 0 {
-                &command[..space[0]]
-	    } else {
-                &command
-	    };
-            let mut a = match Command::new(&new_com)
-	        .args(&args)
-                .spawn() {
-                    Ok(k) => k,
-    	            Err(_) => {
-		        println!("Command not found!");
-		        continue;
-		    },
-    	    };
-	    
+                        continue;
+                    }
+                };
+            } else if args.len() == 0 {
+                assert!(env::set_current_dir(
+                    env::var("HOME").expect("HOME environment variable not set!")
+                )
+                .is_ok());
+            } else {
+                println!("Expected only one argument, more than one given!");
+            }
+        } else {
+            let mut a = match Command::new(&command).args(&args).spawn() {
+                Ok(k) => k,
+                Err(_) => {
+                    println!("Command not found!");
+                    continue;
+                }
+            };
+
             match a.wait().is_ok() {
                 true => continue,
-		false => {
+                false => {
                     println!("Command execution failed!");
-		    continue;
-		},
-	     
-	
-	   };
+                    continue;
+                }
+            };
         }
     }
 }
