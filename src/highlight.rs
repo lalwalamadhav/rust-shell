@@ -1,6 +1,6 @@
-use colored::Colorize;
+use colored::{Colorize,ColoredString};
 use std::io::{self,Write};
-mod process_command;
+use crate::process_command;
 
 enum Input {
     ValidCommand(String),
@@ -10,19 +10,19 @@ enum Input {
 }
 
 impl Input {
-    fn highlight(&self) {
+    fn highlight(&self) -> ColoredString {
         match self {
-            Input::ValidCommand(k) => print!("{}",format!("{}", k).blue()),
-            Input::InvalidCommand(k) => print!("{}",format!("{}", k).red()),
-            Input::Arguments(k) => print!(" {}",format!("{}", k).cyan()),
-            Input::Quotes(k) => print!("{}",format!("{}", k).yellow()),
-        };
-        io::stdout().flush().unwrap();
+            Input::ValidCommand(k) => format!("{}", k).blue(),
+            Input::InvalidCommand(k) => format!("{}", k).red(),
+            Input::Arguments(k) => format!("{}", k).cyan(),
+            Input::Quotes(k) => format!("{}", k).yellow(),
+        }
     }
 }
 
-pub fn highlighter(raw_input: &String, command_list: Vec<String>) {
+pub fn highlighter(raw_input: &String, command_list: &Vec<String>) -> String {
     let mut arg: Vec<Input> = vec![];
+    let mut return_string: String = String::from("");
     let (command, args) = process_command::comm(&raw_input);
     let input: Input;
     if command_list.contains(&command) {
@@ -37,10 +37,10 @@ pub fn highlighter(raw_input: &String, command_list: Vec<String>) {
             arg.push(Input::Quotes(i.to_string()));
         }
     }
-    input.highlight();
+    return_string = format!("{}{}",return_string,input.highlight());
     for i in arg.iter() {
-        print!(" ");
-	io::stdout().flush().unwrap();
-        i.highlight();
+        return_string = format!("{} ",return_string);
+        return_string = format!("{}{}",return_string,i.highlight());
     }
+    return_string
 }
