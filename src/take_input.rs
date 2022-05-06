@@ -1,20 +1,38 @@
-use std::io;
 mod process_command;
 mod highlight;
+use std::{io::{self,Write},thread,time};
+use termion::{self,input::TermRead,raw::IntoRawMode};
 
-fn main() {
-    let mut input: String = String::from("");
-    let mut track_input: String = String::new();
+fn input_command() -> String {
+    let mut stdout = io::stdout()
+        .into_raw_mode()
+	.unwrap();
+    let mut stdin = termion::async_stdin().keys();
+    let mut r = 3;
+
     loop {
-        let stdin = io::stdin()
-	     .take(1)
-	     .expect("Input failed!");
-	stdin.read_line(&mut track_input);
-	input.push_str(track_input);
-        if stdin == "\n" {
-            break;
-	} else {
-            highlight::highlighter(input);
+        let input = stdin.next();
+	
+	if let Some(Ok(key)) = input {
+            match key {
+                termion::event::Key::Backspace => {
+                    char_vec.remove(r);
+		    write!("{}{}",highlight::highlighter(char_vec.into_iter().collect()),termion::cursor::Goto((r - 1),1);
+		},
+		termion::event::Key::Left => write!("{}",termion::cursor::Goto(r-1, 1),
+		termion::event::Key::Right => {
+                    if r < char_vec.len() {
+                        write!("{}",termion::cursor::Goto(r + 1, 1);
+		    }
+		},
+		termion::event::Key::Char('\n') => break;
+		termion::event::Key::Char(k) => {
+                    char_vec.insert(r,k);
+		    write!("{}{}",highlight::highlighter(char_vec.into_iter().collect()),termion::cursor::Goto((r + 1),1);
+		}
+		_ => (),
+	    }
 	}
     }
+    char_vec.into_iter().collect()
 }
