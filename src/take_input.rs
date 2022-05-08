@@ -19,7 +19,7 @@ pub fn input_command() -> String {
             match key {
 		termion::event::Key::Left => {
 		    if usize::from(r) > 0 {
-                        write!(&mut stdout,"{}",termion::cursor::Goto(r-1 , 1)).unwrap();
+                        write!(&mut stdout,"{}",termion::cursor::Goto(r , 1)).unwrap();
 		        stdout.flush().unwrap();
 		        r -= 1;
 	            } else {
@@ -27,8 +27,8 @@ pub fn input_command() -> String {
 		    }
 		},
 		termion::event::Key::Right => {
-                    if usize::from(r) <= char_vec.len() {
-                        write!(&mut stdout,"{}",termion::cursor::Goto(r+1 , 1)).unwrap();
+                    if usize::from(r) < char_vec.len() {
+                        write!(&mut stdout,"{}",termion::cursor::Goto(r + 2 , 1)).unwrap();
 			stdout.flush().unwrap();
 			r += 1;
 		    } else {
@@ -36,12 +36,14 @@ pub fn input_command() -> String {
 		    }
 		},
                 termion::event::Key::Backspace => {
-		    if usize::from(r) >= char_vec.len() {
+		    if usize::from(r) >= 1 {
                         char_vec.pop();
 		        write!(&mut stdout,"{}{}{}{}",termion::clear::All,termion::cursor::Goto(1,1),highlight::highlighter(&((&char_vec).into_iter().collect()),&commands),termion::cursor::Goto(r,1)).unwrap();
                         stdout.flush().unwrap();
 		        r -= 1;
 
+		    } else if usize::from(r) == 0 {
+                        continue;
 		    } else {
                         char_vec.remove(usize::from(r) - 1);
 		        write!(&mut stdout,"{}{}{}{}",termion::clear::All,termion::cursor::Goto(1,1),highlight::highlighter(&((&char_vec).into_iter().collect()),&commands),termion::cursor::Goto(r,1)).unwrap();

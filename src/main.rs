@@ -3,6 +3,8 @@ use std::env;
 use std::io::{self, Write};
 use std::process::Command;
 mod process_command;
+mod highlight;
+mod take_input;
 
 fn main() {
     loop {
