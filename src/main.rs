@@ -11,7 +11,7 @@ fn main() {
         let add = Command::new("pwd")
             .output()
             .expect("Getting the path failed");
-        let prompt: &str = "|> ";
+        let prompt: &str = "-> ";
         print!(
             "\n{}",
             format!(
