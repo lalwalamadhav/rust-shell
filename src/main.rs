@@ -50,6 +50,12 @@ fn main() {
             } else {
                 println!("Expected only one argument, more than one given!");
             }
+        } else if command == String::from("setvar"){
+            if args.len() < 2 {
+                println!("Error: Expected more arguments!");
+            } else if args.len() == 2 {
+                env::set_var(&args[0], &args[1]);
+            }
         } else {
             let mut a = match Command::new(&command).args(&args).spawn() {
                 Ok(k) => k,
