@@ -51,8 +51,8 @@ pub fn comm(command: &String) -> (String, Vec<String>) {
                     if i != (sep_vec.len() - 1) {
                         match sep_vec[i + 1] {
                             Separator::Space(k) => args.push((&command[(j + 1)..k]).to_string()),
-			    Separator::Slash(k) => arg_new.push_str(&command[(j + 1)..k]),
-			    Separator::EnvVar(_) => (),
+                            Separator::Slash(k) => arg_new.push_str(&command[(j + 1)..k]),
+                            Separator::EnvVar(_) => (),
                         };
                     } else {
                         args.push((&command[(j + 1)..]).to_string());
