@@ -1,4 +1,4 @@
-struct command {
+pub struct command {
     command: String,
     args: Vec<String>,
 }
