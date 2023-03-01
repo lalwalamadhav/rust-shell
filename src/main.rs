@@ -5,8 +5,15 @@ use std::process::Command;
 mod process_command;
 mod highlight;
 mod take_input;
+mod get_commands;
+mod trie3;
+use get_commands::construct_tree;
+use trie::Node;
+mod terminal;
+use terminal::input_command;
 
 fn main() {
+    let dictionary: Node = construct_tree();
     loop {
         let add = Command::new("pwd")
             .output()
@@ -22,13 +29,17 @@ fn main() {
             .red()
         );
         io::stdout().flush().unwrap();
+        /*
         let mut command = String::new();
         io::stdin()
             .read_line(&mut command)
             .expect("Command input failed");
         let command = String::from(command.trim());
         let (command, args) = process_command::comm(&command);
-
+        */
+        let raw_command = input_command(dictionary);
+        let command = raw_command.getCommand();
+        let args = raw_command.getArgs();
         if command == String::from("exit") {
             break;
         } else if command == String::from("") {

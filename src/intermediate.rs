@@ -1,7 +1,7 @@
-mod trie3;
 mod command;
-use command;
-use colored::{Colorize, ColoredString};
+mod trie3;
+use colored::{ColoredString, Colorize};
+use command::command;
 use trie3::Node;
 
 pub fn coloredString(input_vec: Vec<char>, dictionary: Node) -> String {

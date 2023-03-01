@@ -1,0 +1,21 @@
+#+title: Readme
+
+* Getting the Shell
+Install git and clone this repository using:
+#+begin_src
+git clone https://github.com/lalwalamadhav/rust-shell
+#+end_src
+*Note*: The default branch on cloning is a development branch and may have new untested code. Please switch to main branch using the following command for a working shell.
+#+begin_src
+git checkout main
+#+end_src
+
+* Running the Shell
+It requires that the rust-cargo be installed on the system. First change the working directory to the cloned repository using:
+#+begin_src
+cd rust-shell
+#+end_src
+And then, run the shell using:
+#+begin_src
+cargo run
+#+end_src

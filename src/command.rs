@@ -27,4 +27,11 @@ impl command {
             args: args,
         }
     }
+    fn getCommand(&self) -> String {
+        return self.command;
+    }
+
+    fn getArgs(&self) -> Vec<String> {
+        return self.args;
+    }
 }

@@ -1,19 +1,23 @@
 mod intermediate;
+mod command;
 mod trie3;
-use trie3::Node;
+use crate::highlight;
+use intermediate::coloredString;
 use std::{
     io::{self, Write},
     thread, time,
 };
+use command::command;
 use termion::{self, input::TermRead, raw::IntoRawMode};
-use crate::highlight;
+use trie3::Node;
 use intermediate::coloredString;
+use std::convert::TryInto;
 
-pub fn input_command(dictionary: Node) -> String {
+pub fn input_command(dictionary: Node) -> command {
     let mut stdout = io::stdout().into_raw_mode().unwrap();
     let mut stdin = termion::async_stdin().keys();
     let mut char_vec: Vec<char> = vec![];
-    let mut r: u16 = 0;
+    let mut r: usize = 0;
     let commands = vec![];
     loop {
         let input = stdin.next();
@@ -21,7 +25,6 @@ pub fn input_command(dictionary: Node) -> String {
             match key {
                 termion::event::Key::Left => {
                     if usize::from(r) > 0 {
-                        //write!(&mut stdout,"{}",termion::cursor::Goto(r , 1)).unwrap();
                         write!(&mut stdout, "{}", termion::cursor::Left(1)).unwrap();
                         stdout.flush().unwrap();
                         r -= 1;
@@ -31,7 +34,6 @@ pub fn input_command(dictionary: Node) -> String {
                 }
                 termion::event::Key::Right => {
                     if usize::from(r) < char_vec.len() {
-                        //write!(&mut stdout,"{}",termion::cursor::Goto(r + 2 , 1)).unwrap();
                         write!(&mut stdout, "{}", termion::cursor::Right(1)).unwrap();
                         stdout.flush().unwrap();
                         r += 1;
@@ -41,15 +43,14 @@ pub fn input_command(dictionary: Node) -> String {
                 }
                 termion::event::Key::Backspace => {
                     if usize::from(r) >= 1 {
-                        char_vec.pop(r);
+                        char_vec.remove(usize::from(r));
                         write!(
                             &mut stdout,
                             "{}{}{}{}",
-                            termion::cursor::Left(r),
+                            termion::cursor::Left(r.try_into().unwrap()),
                             termion::clear::AfterCursor,
                             coloredString(char_vec, dictionary),
-                            termion::cursor::Right(r - 1)
-
+                            termion::cursor::Right((r - 1).try_into().unwrap());
                         )
                         .unwrap();
                         stdout.flush().unwrap();
@@ -71,10 +72,11 @@ pub fn input_command(dictionary: Node) -> String {
                     write!(
                         &mut stdout,
                         "{}{}{}{}",
-                        termion::cursor::Left(r - 1),
+                        termion::cursor::Left((r - 1).try_into().unwrap()),
                         termion::clear::AfterCursor,
                         coloredString(char_vec, dictionary),
-                        termion::cursor::Right(r)
+                        termion::cursor::Right(r.try_into().unwrap())
+                    )
                     .unwrap();
                     stdout.flush().unwrap();
                 }
@@ -84,5 +86,5 @@ pub fn input_command(dictionary: Node) -> String {
         }
         thread::sleep(time::Duration::from_millis(50));
     }
-    char_vec.into_iter().collect()
+    return command::new(char_vec.into_iter().collect());
 }
